@@ -37,6 +37,7 @@ export default defineConfig({
         text: 'Cameras',
         items: [
           { text: 'Pan/Tilt/Zoom Button', link: '/ptz-button' },
+          { text: 'Stream to Chromecast Button', link: '/camera-chromecast-button' },
         ],
       },
       {
