@@ -30,6 +30,7 @@ export default defineConfig({
         text: 'General',
         items: [
           { text: 'Extension Toggle', link: '/extension-toggle' },
+          { text: 'PTZ Button', link: '/ptz-button' },
           { text: 'Notification Filter', link: '/notification-filter' },
         ]
       },
