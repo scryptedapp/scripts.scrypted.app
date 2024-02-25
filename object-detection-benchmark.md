@@ -2,13 +2,19 @@
 
 This script can be used to an Object Detector like Tensorflow-Lite (Coral), CoreML (Mac and Apple Silicon), and OpenVINO (Intel).
 
+
+::: warning
+The script below runs the benchmark on OpenVINO. Modify the script to run it on a different Object Detection backend(s).
+:::
+
+
 ```ts
 const mo = await mediaManager.createMediaObjectFromUrl('https://user-images.githubusercontent.com/73924/230690188-7a25983a-0630-44e9-9e2d-b4ac150f1524.jpg');
 const image = await mediaManager.convertMediaObject<Image & MediaObject>(mo, 'x-scrypted/x-scrypted-image');
 
 const detectors = [
-    '@scrypted/coreml',
-    // '@scrypted/openvino',
+    // '@scrypted/coreml',
+    '@scrypted/openvino',
     // '@scrypted/tensorflow-lite',
 ];
 
