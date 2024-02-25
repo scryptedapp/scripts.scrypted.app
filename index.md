@@ -7,6 +7,6 @@ Scripts are a lightweight user editable way to add powerful automations, devices
 Scripts can be added to a Scrypted server by visiting the Management Console and clicking the `Scripts` sidebar item, then clicking `Add New`. Select `Empty Script` when prompted. Then replace the contents with the code found on this site and press the `Save` icon.
 
 ::: tip
-The samae script can be added multiple times!
+The same script can be added multiple times!
 :::
 
