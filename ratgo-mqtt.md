@@ -4,7 +4,7 @@
 This script must be added through the MQTT Plugin.
 :::
 
-This MQTT Script adds a RATGO to Scrypted, which cn then be synced to other platforms like HomeKit, Alexa, and Google Home. The RATGO and this script will need to be configured to use an MQTT broker. The Scrypted MQTT plugin has a broker built in.
+This MQTT Script adds a RATGO to Scrypted, which can then be synced to other platforms like HomeKit, Alexa, and Google Home. The RATGO and this script will need to be configured to use an MQTT broker. The Scrypted MQTT plugin has a broker built in.
 
 ```ts
 let obstructed = false;
