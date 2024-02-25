@@ -37,6 +37,7 @@ export default defineConfig({
         text: 'Scrypted NVR',
         items: [
           { text: 'Privacy Mode Toggle', link: '/nvr/privacy-mode-toggle' },
+          { text: 'Detection Benchmark', link: '/object-detection-benchmark' },
         ]
       },
     ],
