@@ -31,7 +31,7 @@ export default defineConfig({
         items: [
           { text: 'Extension Toggle', link: '/extension-toggle' },
           { text: 'Notification Filter', link: '/notification-filter' },
-          { text: 'Notification Filter - Linked', link: '/notification-filter-device-linkedr' },
+          { text: 'Notification Filter - Linked', link: '/notification-filter-device-linked' },
         ]
       },
       {
