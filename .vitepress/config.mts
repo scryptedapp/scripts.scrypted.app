@@ -42,7 +42,7 @@ export default defineConfig({
       {
         text: 'Other Devices',
         items: [
-          { text: 'RATGO (Garage) MQTT', link: '/ratgo-mqtt' },
+          { text: 'RATGDO (Garage) MQTT', link: '/ratgdo-mqtt' },
         ],
       },
       {
