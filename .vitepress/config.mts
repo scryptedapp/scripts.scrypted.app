@@ -34,6 +34,12 @@ export default defineConfig({
         ]
       },
       {
+        text: 'Cameras',
+        items: [
+          { text: 'Pan/Tilt/Zoom Button', link: '/ptz-button' },
+        ],
+      },
+      {
         text: 'Scrypted NVR',
         items: [
           { text: 'Privacy Mode Toggle', link: '/nvr/privacy-mode-toggle' },
