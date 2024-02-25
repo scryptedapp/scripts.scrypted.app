@@ -63,7 +63,7 @@ class PTZButton extends ScryptedDeviceBase implements OnOff, Settings {
     }
 
     async putSetting(key: string, value: SettingValue) {
-        localStorage.setItem(key, value?.toString());
+        this.storage.setItem(key, value?.toString());
         deviceManager.onDeviceEvent(this.nativeId, ScryptedInterface.Settings, undefined);
     }
 }
