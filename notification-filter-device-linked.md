@@ -2,7 +2,7 @@
 
 This script configures a toggle device (switch or lock) and a list of cameras. If a notification is going to be sent about one of the cameras and the toggle device is locked/on then the notification is discarded.
 
-This allows for disabling notiications for all users for events based on the toggle device status. Useful to keep logging events but not send notifications. That way you have the events and go easily go back to them but they aren't going to contribute to notification fatigue.
+This allows for disabling notifications for all users for events based on the toggle device status. Useful to keep logging events but not send notifications. That way you have the events and go easily go back to them but they aren't going to contribute to notification fatigue.
 
 Example would be a inside garage camera. You want the notifications when you aren't home but not when you are. You also don't want to annoy the spouse so want the notifications filtered for them at the same time. But since the events are logged you can easily go back and refer to see that yes someone left the door open and your dog came in and left a gift now you can point the finger at yourself for leaving the door open. :)
 
