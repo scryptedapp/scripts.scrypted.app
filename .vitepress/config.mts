@@ -12,7 +12,7 @@ export default defineConfig({
   description: "Curated list of useful scripts and automations for Scrypted.",
   themeConfig: {
     editLink: {
-      pattern: 'https://github.com/koush/docs.scrypted.app/edit/main/:path'
+      pattern: 'https://github.com/scryptedapp/scripts/edit/main/:path'
     },
     logo: '/img/logo.png',
     search: {
