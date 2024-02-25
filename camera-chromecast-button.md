@@ -7,13 +7,11 @@ class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settin
     timeout: any;
 
     async turnOn() {
-        const chromecast = systemManager.getDeviceById<MediaPlayer & StartStop>(this.storage.getItem('chromecast'));
-        const camera = systemManager.getDeviceById<VideoCamera>(this.storage.getItem('camera'));
+        const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(this.storage.getItem('chromecast'));
+        const camera = systemManager.getDeviceById<RTCSignalingChannel>(this.storage.getItem('camera'));
 
         this.on = true;
-        // stream medium resolution because the device may not handle 4K
-        const video = await camera.getVideoStream({ destination: 'medium-resolution' });
-        await chromecast.load(video);
+        await camera.startRTCSignalingSession(await chromecast.createRTCSignalingSession());
         clearTimeout(this.timeout);
         const duration = this.storage.getItem('duration');
         if (duration !== '0')
