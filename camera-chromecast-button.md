@@ -11,7 +11,8 @@ class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settin
         const camera = systemManager.getDeviceById<VideoCamera>(this.storage.getItem('camera'));
 
         this.on = true;
-        const video = await camera.getVideoStream();
+        // stream medium resolution because the device may not handle 4K
+        const video = await camera.getVideoStream({ destination: 'medium-resolution' });
         await chromecast.load(video);
         clearTimeout(this.timeout);
         const duration = this.storage.getItem('duration');
