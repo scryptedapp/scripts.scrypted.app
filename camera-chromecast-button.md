@@ -2,6 +2,11 @@
 
 This script will create a button that can stream a camera on a Chromecast compatible device (Google Hubs, Chromecast, etc).
 
+::: warning
+Casting to Chromecast requires the Scrypted Cloud plugin.
+:::
+
+
 ```ts
 class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settings {
     timeout: any;
