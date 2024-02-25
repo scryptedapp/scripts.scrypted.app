@@ -40,6 +40,12 @@ export default defineConfig({
         ],
       },
       {
+        text: 'Other Devices',
+        items: [
+          { text: 'RATGO (Garage) MQTT', link: '/ratgo-mqtt' },
+        ],
+      },
+      {
         text: 'Scrypted NVR',
         items: [
           { text: 'Privacy Mode Toggle', link: '/nvr/privacy-mode-toggle' },
