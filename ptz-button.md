@@ -57,7 +57,7 @@ class PTZButton extends ScryptedDeviceBase implements OnOff, Settings {
                 description: 'The distance to move. Between 0 and 1.',
                 key: 'distance',
                 type: 'number',
-                value: this.storage.getItem('amount') || .5,
+                value: this.storage.getItem('distance') || .5,
             }
         ]
     }
