@@ -25,7 +25,7 @@ class PTZButton extends ScryptedDeviceBase implements OnOff, Settings {
         // when the button is pressed, spin 90 degrees.
         // range is between -1 (-180 degrees) and 1 (180 degrees)
         await ptzCamera.ptzCommand({
-            [this.storage.getItem('comand') || 'pan']: parseFloat(this.storage.getItem('distance')) || .5,
+            [this.storage.getItem('command') || 'pan']: parseFloat(this.storage.getItem('distance')) || .5,
         });
     }
 
