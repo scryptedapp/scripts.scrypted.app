@@ -9,13 +9,13 @@ The script below runs the benchmark on OpenVINO. Modify the script to run it on 
 
 ## Reference Times
 
-Below are benchark times that can be expected from common systems. 
+Below are benchark times that can be expected from various servers. 
 
 |Server|Time|
 |-|-|
 |N100|22 seconds|
 |13500H|16 seconds|
-|M1 Ultra|12 seconds|
+|Apple Silicon M1 Ultra|12 seconds|
 
 ## Script
 
