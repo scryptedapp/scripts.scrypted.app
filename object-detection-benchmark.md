@@ -13,8 +13,8 @@ Below are benchark times that can be expected from various servers.
 
 |Server|Time|
 |-|-|
-|N100|22 seconds|
-|13500H|16 seconds|
+|Intel N100|22 seconds|
+|Intel 13500H|16 seconds|
 |Apple Silicon M1 Ultra|12 seconds|
 
 ## Script
