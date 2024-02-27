@@ -9,6 +9,8 @@ The script below runs the benchmark on OpenVINO. Modify the script to run it on 
 
 ## Reference Times
 
+Below are benchark times that can be expected from common systems. 
+
 |Server|Time|
 |-|-|
 |N100|22 seconds|
