@@ -7,6 +7,15 @@ This script can be used to an Object Detector like Tensorflow-Lite (Coral), Core
 The script below runs the benchmark on OpenVINO. Modify the script to run it on a different Object Detection backend(s).
 :::
 
+## Reference Times
+
+|Server|Time|
+|-|-|
+|N100|22 seconds|
+|13500H|16 seconds|
+|M1 Ultra|12 seconds|
+
+## Script
 
 ```ts
 const mo = await mediaManager.createMediaObjectFromUrl('https://user-images.githubusercontent.com/73924/230690188-7a25983a-0630-44e9-9e2d-b4ac150f1524.jpg');
