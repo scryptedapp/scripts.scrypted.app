@@ -12,7 +12,7 @@ The script below runs the benchmark on OpenVINO. Modify the script to run it on 
 Below are benchark times that can be expected from various servers. 
 
 |Server|yolov8 320 Time|EfficientDet-Lite0 Time|
-|-|-|
+|-|-|-|
 |Apple Silicon M1 Ultra|12 seconds|N/A|
 |Intel 13500H|16 seconds|N/A|
 |2x Mini PCIe Coral|19 seconds|25 seconds|
