@@ -15,7 +15,8 @@ Below are benchark times that can be expected from various servers.
 |-|-|
 |Apple Silicon M1 Ultra|12 seconds|
 |Intel 13500H|16 seconds|
-|Intel N100|22 seconds|
+|2x Mini PCIe Coral|25 seconds|
+|Intel N100|35 seconds|
 
 ## Script
 
