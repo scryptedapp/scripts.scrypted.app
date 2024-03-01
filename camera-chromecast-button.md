@@ -3,7 +3,7 @@
 This script will create a button that can stream a camera on a Chromecast compatible device (Google Hubs, Chromecast, etc).
 
 ::: warning
-Casting to Chromecast requires the Scrypted Cloud plugin.
+Casting to Chromecast requires the Chromecast and Scrypted Cloud plugins.
 :::
 
 
