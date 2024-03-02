@@ -10,23 +10,45 @@ Casting to Chromecast requires the Chromecast and Scrypted Cloud plugins.
 ```ts
 class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settings {
     timeout: any;
+    readonly DEFAULT_TIMEOUT_SECS = 60;
 
     async turnOn() {
-        const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(this.storage.getItem('chromecast'));
-        const camera = systemManager.getDeviceById<RTCSignalingChannel>(this.storage.getItem('camera'));
+        const ids = this.getJSON('chromecasts') as string[];
+        const camera = systemManager.getDeviceById<RTCSignalingChannel>(this.getJSON('camera') as string);
+
+        for (const id of ids) {
+            const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(id);
+            if (!chromecast) {
+                this.console.log('Device is missing:', id);
+                continue;
+            }
+
+            await camera.startRTCSignalingSession(await chromecast.createRTCSignalingSession());
+        }
 
         this.on = true;
-        await camera.startRTCSignalingSession(await chromecast.createRTCSignalingSession());
+
         clearTimeout(this.timeout);
-        const duration = this.storage.getItem('duration');
-        if (duration !== '0')
-            this.timeout = setTimeout(() => this.turnOff(), (parseFloat(duration) || 60) * 1000);
+        const duration = this.getJSON('duration') as string;
+        if (duration !== '0') {
+            this.timeout = setTimeout(() => this.turnOff(), (parseFloat(duration) || this.DEFAULT_TIMEOUT_SECS) * 1000);
+        }
     }
 
     async turnOff() {
-        const chromecast = systemManager.getDeviceById<MediaPlayer & StartStop>(this.storage.getItem('chromecast'));
+        const ids = this.getJSON('chromecasts') as string[];
+
+        for (const id of ids) {
+            const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(id);
+            if (!chromecast) {
+                this.console.log('Device is missing:', id);
+                continue;
+            }
+
+            await chromecast.stop();
+        }
+
         this.on = false;
-        await chromecast.stop();
     }
 
     async getSettings(): Promise<Setting[]> {
@@ -34,21 +56,22 @@ class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settin
             {
                 title: 'Camera',
                 key: 'camera',
-                value: this.storage.getItem('camera'),
+                value: this.getJSON('camera'),
                 type: 'device',
                 deviceFilter: `interfaces.includes("${ScryptedInterface.RTCSignalingChannel}")`,
             },
             {
-                title: 'Chromecast',
-                key: 'chromecast',
-                value: this.storage.getItem('chromecast'),
+                title: 'Chromecasts',
+                key: 'chromecasts',
+                value: this.getJSON('chromecasts'),
                 type: 'device',
                 deviceFilter: `interfaces.includes("${ScryptedInterface.RTCSignalingClient}")`,
+                multiple: true,
             },
             {
                 title: 'Duration',
                 key: 'duration',
-                value: this.storage.getItem('duration') || 60,
+                value: this.getJSON('duration') || this.DEFAULT_TIMEOUT_SECS,
                 type: 'number',
                 description: 'Duration in seconds to stream the camera on the Chromecast.',
             }
@@ -56,8 +79,16 @@ class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settin
     }
 
     async putSetting(key: string, value: SettingValue) {
-        this.storage.setItem(key, value?.toString());
+        this.storage.setItem(key, JSON.stringify(value));
         deviceManager.onDeviceEvent(this.nativeId, ScryptedInterface.Settings, undefined);
+    }
+
+    getJSON(key: string): SettingValue {
+        try {
+            return JSON.parse(this.storage.getItem(key));
+        } catch (e) {
+            return [];
+        }
     }
 }
 
