@@ -18,6 +18,7 @@ Below are benchark times that can be expected from various servers.
 |2 x Mini PCIe Coral|19 seconds|25 seconds|
 |Intel N100|35 seconds|N/A|
 |1 x Mini PCIe Coral|38 seconds|50 seconds|
+|1 x USB Coral|38 seconds|89 seconds|
 
 ::: tip
 Tensorflow-Lite uses the EfficientDet-Lite0 model by default, since yolov8n suffers from accuracy loss on int8 quantization. The yolov8n benchmark is listed for reference purposes.
