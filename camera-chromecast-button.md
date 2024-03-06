@@ -17,75 +17,53 @@ class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settin
         const camera = systemManager.getDeviceById<RTCSignalingChannel>(this.getJSON('camera') as string);
         clearTimeout(this.timeout);
 
-        try {
-            await new Promise<void>((resolve, reject) => {
-                const total = ids.length;
-                let completed = 0;
-                if (total === 0) resolve();
-
-                ids.forEach(async (id) => {
-                    try {
-                        const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(id);
-                        if (!chromecast) {
-                            this.console.log('Device is missing:', id);
-                        } else {
-                            await camera.startRTCSignalingSession(await chromecast.createRTCSignalingSession());
-                        }
-                    } catch (error) {
-                        reject(new Error(`Error starting Camera (${camera.id}) or Chromecast (${id}): ${error.message}`));
-                    } finally {
-                        completed++;
-                        if (completed === total) {
-                            resolve();
-                        }
+        const promises = ids.map((id => {
+            return new Promise<void>(async (resolve, reject) => {
+                const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(id);
+                try {
+                    if (!chromecast) {
+                        throw new Error(`Device is missing: ${id}`);
+                    } else {
+                        await camera.startRTCSignalingSession(await chromecast.createRTCSignalingSession());
+                        resolve();
                     }
-                });
+                } catch (error) {
+                    console.warn('Failed to start', id, chromecast?.name, error);
+                }
             });
+        }));
 
-            let duration = parseFloat(this.getJSON('duration') as string);
-            if (isNaN(duration)) {
-                duration = this.DEFAULT_TIMEOUT_SECS;
-            }
+        await Promise.allSettled(promises);
 
-            this.timeout = setTimeout(() => this.turnOff(), duration * 1000);
-            this.on = true;
-        } catch (error) {
-            this.console.error('turnOn error:', error);
+        let duration = parseFloat(this.getJSON('duration') as string);
+        if (isNaN(duration)) {
+            duration = this.DEFAULT_TIMEOUT_SECS;
         }
+
+        this.timeout = setTimeout(() => this.turnOff(), duration * 1000);
+        this.on = true;
     }
 
     async turnOff() {
         const ids = this.getJSON('chromecasts') as string[];
-
-        try {
-            await new Promise<void>((resolve, reject) => {
-                const total = ids.length;
-                let completed = 0;
-                if (total === 0) resolve();
-
-                ids.forEach(async (id) => {
-                    try {
-                        const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(id);
-                        if (!chromecast) {
-                            this.console.log('Device is missing:', id);
-                        } else {
-                            await chromecast.stop();
-                        }
-                    } catch (error) {
-                        reject(new Error(`Error stopping Chromecast (${id}): ${error.message}`));
-                    } finally {
-                        completed++;
-                        if (completed === total) {
-                            resolve();
-                        }
+        const promises = ids.map((id => {
+            const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(id);
+            return new Promise<void>(async (resolve, reject) => {
+                try {
+                    if (!chromecast) {
+                        throw new Error(`Device is missing: ${id}`);
+                    } else {
+                        await chromecast.stop();
+                        resolve();
                     }
-                });
+                } catch (error) {
+                    console.warn('Failed to stop', id, chromecast?.name, error);
+                }
             });
+        }));
 
-            this.on = false;
-        } catch (error) {
-            this.console.error('turnOff error:', error);
-        }
+        await Promise.allSettled(promises);
+        this.on = false;
     }
 
     async getSettings(): Promise<Setting[]> {
