@@ -12,7 +12,7 @@ class PlayAudioButton extends ScryptedDeviceBase implements OnOff, Settings {
     timeout: any;
 
     async turnOn() {
-        const audio = this.getJSON('audio') as string;
+        const audio = this.getJSON('audio') as string || 'https://download.samplelib.com/mp3/sample-3s.mp3';
         this.on = true;
 
         const ids = this.getJSON('speakers') as string[];
@@ -65,7 +65,7 @@ class PlayAudioButton extends ScryptedDeviceBase implements OnOff, Settings {
                 title: 'Audio File',
                 description: 'The path or URL of the audio to play back.',
                 key: 'audio',
-                value: this.getJSON('audio'),
+                value: this.getJSON('audio') || "https://download.samplelib.com/mp3/sample-3s.mp3",
             },
             {
                 title: 'Speakers',
