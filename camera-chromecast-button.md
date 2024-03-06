@@ -33,11 +33,7 @@ class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settin
 
         await Promise.allSettled(promises);
 
-        let duration = parseFloat(this.getJSON('duration') as string);
-        if (isNaN(duration)) {
-            duration = this.DEFAULT_TIMEOUT_SECS;
-        }
-
+        const duration = parseFloat(this.getJSON('duration') as string) || DEFAULT_TIMEOUT_SECS;
         this.timeout = setTimeout(() => this.turnOff(), duration * 1000);
         this.on = true;
     }
