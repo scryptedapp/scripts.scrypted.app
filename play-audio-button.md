@@ -41,7 +41,7 @@ class PlayAudioButton extends ScryptedDeviceBase implements OnOff, Settings {
         clearTimeout(this.timeout);
         const duration = this.getJSON('duration') as any;
         if (duration !== '0')
-            this.timeout = setTimeout(() => this.turnOff(), (parseFloat(duration) || 60) * 1000);
+            this.timeout = setTimeout(() => this.turnOff(), (parseFloat(duration) || 10) * 1000);
     }
 
     async turnOff() {
