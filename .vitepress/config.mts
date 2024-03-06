@@ -43,6 +43,7 @@ export default defineConfig({
       {
         text: 'Other Devices',
         items: [
+          { text: 'Play Audio Button', link: '/play-audio-button' },
           { text: 'RATGDO (Garage) MQTT', link: '/ratgdo-mqtt' },
         ],
       },
