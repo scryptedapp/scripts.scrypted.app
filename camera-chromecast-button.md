@@ -17,21 +17,19 @@ class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settin
         const camera = systemManager.getDeviceById<RTCSignalingChannel>(this.getJSON('camera') as string);
         clearTimeout(this.timeout);
 
-        const promises = ids.map((id => {
-            return new Promise<void>(async (resolve, reject) => {
-                const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(id);
-                try {
-                    if (!chromecast) {
-                        throw new Error(`Device is missing: ${id}`);
-                    } else {
-                        await camera.startRTCSignalingSession(await chromecast.createRTCSignalingSession());
-                        resolve();
-                    }
-                } catch (error) {
-                    console.warn('Failed to start', id, chromecast?.name, error);
+        const promises = ids.map(async id => {
+            const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(id);
+            try {
+                if (!chromecast) {
+                    throw new Error(`Device is missing: ${id}`);
+                } else {
+                    await camera.startRTCSignalingSession(await chromecast.createRTCSignalingSession());
+                    return;
                 }
-            });
-        }));
+            } catch (error) {
+                console.warn('Failed to start', id, chromecast?.name, error);
+            }
+        });
 
         await Promise.allSettled(promises);
 
@@ -46,21 +44,19 @@ class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settin
 
     async turnOff() {
         const ids = this.getJSON('chromecasts') as string[];
-        const promises = ids.map((id => {
+        const promises = ids.map(async id => {
             const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(id);
-            return new Promise<void>(async (resolve, reject) => {
-                try {
-                    if (!chromecast) {
-                        throw new Error(`Device is missing: ${id}`);
-                    } else {
-                        await chromecast.stop();
-                        resolve();
-                    }
-                } catch (error) {
-                    console.warn('Failed to stop', id, chromecast?.name, error);
+            try {
+                if (!chromecast) {
+                    throw new Error(`Device is missing: ${id}`);
+                } else {
+                    await chromecast.stop();
+                    return;
                 }
-            });
-        }));
+            } catch (error) {
+                console.warn('Failed to stop', id, chromecast?.name, error);
+            }
+        });
 
         await Promise.allSettled(promises);
         this.on = false;
