@@ -10,23 +10,60 @@ Casting to Chromecast requires the Chromecast and Scrypted Cloud plugins.
 ```ts
 class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settings {
     timeout: any;
+    readonly DEFAULT_TIMEOUT_SECS = 60;
 
     async turnOn() {
-        const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(this.storage.getItem('chromecast'));
-        const camera = systemManager.getDeviceById<RTCSignalingChannel>(this.storage.getItem('camera'));
-
-        this.on = true;
-        await camera.startRTCSignalingSession(await chromecast.createRTCSignalingSession());
+        const ids = this.getJSON('chromecasts') as string[];
+        const camera = systemManager.getDeviceById<RTCSignalingChannel>(this.getJSON('camera') as string);
         clearTimeout(this.timeout);
-        const duration = this.storage.getItem('duration');
-        if (duration !== '0')
-            this.timeout = setTimeout(() => this.turnOff(), (parseFloat(duration) || 60) * 1000);
+
+        const promises = ids.map((id => {
+            return new Promise<void>(async (resolve, reject) => {
+                const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(id);
+                try {
+                    if (!chromecast) {
+                        throw new Error(`Device is missing: ${id}`);
+                    } else {
+                        await camera.startRTCSignalingSession(await chromecast.createRTCSignalingSession());
+                        resolve();
+                    }
+                } catch (error) {
+                    console.warn('Failed to start', id, chromecast?.name, error);
+                }
+            });
+        }));
+
+        await Promise.allSettled(promises);
+
+        let duration = parseFloat(this.getJSON('duration') as string);
+        if (isNaN(duration)) {
+            duration = this.DEFAULT_TIMEOUT_SECS;
+        }
+
+        this.timeout = setTimeout(() => this.turnOff(), duration * 1000);
+        this.on = true;
     }
 
     async turnOff() {
-        const chromecast = systemManager.getDeviceById<MediaPlayer & StartStop>(this.storage.getItem('chromecast'));
+        const ids = this.getJSON('chromecasts') as string[];
+        const promises = ids.map((id => {
+            const chromecast = systemManager.getDeviceById<RTCSignalingClient & StartStop>(id);
+            return new Promise<void>(async (resolve, reject) => {
+                try {
+                    if (!chromecast) {
+                        throw new Error(`Device is missing: ${id}`);
+                    } else {
+                        await chromecast.stop();
+                        resolve();
+                    }
+                } catch (error) {
+                    console.warn('Failed to stop', id, chromecast?.name, error);
+                }
+            });
+        }));
+
+        await Promise.allSettled(promises);
         this.on = false;
-        await chromecast.stop();
     }
 
     async getSettings(): Promise<Setting[]> {
@@ -34,21 +71,22 @@ class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settin
             {
                 title: 'Camera',
                 key: 'camera',
-                value: this.storage.getItem('camera'),
+                value: this.getJSON('camera'),
                 type: 'device',
                 deviceFilter: `interfaces.includes("${ScryptedInterface.RTCSignalingChannel}")`,
             },
             {
-                title: 'Chromecast',
-                key: 'chromecast',
-                value: this.storage.getItem('chromecast'),
+                title: 'Chromecasts',
+                key: 'chromecasts',
+                value: this.getJSON('chromecasts'),
                 type: 'device',
                 deviceFilter: `interfaces.includes("${ScryptedInterface.RTCSignalingClient}")`,
+                multiple: true,
             },
             {
                 title: 'Duration',
                 key: 'duration',
-                value: this.storage.getItem('duration') || 60,
+                value: this.getJSON('duration') || this.DEFAULT_TIMEOUT_SECS,
                 type: 'number',
                 description: 'Duration in seconds to stream the camera on the Chromecast.',
             }
@@ -56,8 +94,16 @@ class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settin
     }
 
     async putSetting(key: string, value: SettingValue) {
-        this.storage.setItem(key, value?.toString());
+        this.storage.setItem(key, JSON.stringify(value));
         deviceManager.onDeviceEvent(this.nativeId, ScryptedInterface.Settings, undefined);
+    }
+
+    getJSON(key: string): SettingValue {
+        try {
+            return JSON.parse(this.storage.getItem(key));
+        } catch (e) {
+            return [];
+        }
     }
 }
 
