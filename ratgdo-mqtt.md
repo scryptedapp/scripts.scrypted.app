@@ -6,6 +6,10 @@ This script must be added through the MQTT Plugin.
 
 This MQTT Script adds a RATGDO to Scrypted, which can then be synced to other platforms like HomeKit, Alexa, and Google Home. The RATGDO and this script will need to be configured to use an MQTT broker. The Scrypted MQTT plugin has a broker built in.
 
+::: tip
+The MQTT Script must be configured to match the MQTT URL used by the RATGDO. Setting hte Subscription URL to `mqtt://ip/home/garage/ratgdo` will match the RATGDO defaults.
+:::
+
 ```ts
 let obstructed = false;
 let door: string;
