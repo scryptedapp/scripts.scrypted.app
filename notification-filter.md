@@ -24,7 +24,7 @@ export default class NotificationFilter extends ScryptedDeviceBase implements Mi
         return [ScryptedInterface.Notifier];
     }
 
-    async getMixin(mixinDevice: any, mixinDeviceInterfaces: ScryptedInterface[], mixinDeviceState: DeviceState): Promise<any> {
+    async getMixin(mixinDevice: any, mixinDeviceInterfaces: ScryptedInterface[], mixinDeviceState: WritableDeviceState): Promise<any> {
         return new NotifierFilterMixin({
             mixinDevice,
             mixinDeviceInterfaces,
