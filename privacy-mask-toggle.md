@@ -35,7 +35,11 @@ class PrivacyMaskToggler extends ScryptedDeviceBase implements Settings, OnOff {
         const ids = this.getJSON('devices') as string[];
         for (const id of ids) {
             const device = systemManager.getDeviceById<VideoCameraMask>(id);
-            device.setPrivacyMasks({ masks: [] });
+            device.getPrivacyMasks().then(mask => {
+                mask.masks = mask.masks?.filter(m => m.name !== 'Scrypted Privacy Mask');
+                console.log('gottem', mask)
+                device.setPrivacyMasks(mask);
+            });
         }
         this.on = false;
     }
@@ -44,10 +48,16 @@ class PrivacyMaskToggler extends ScryptedDeviceBase implements Settings, OnOff {
         const ids = this.getJSON('devices') as string[];
         for (const id of ids) {
             const device = systemManager.getDeviceById<VideoCameraMask>(id);
-            await device.setPrivacyMasks({
-                masks: [{
-                    points: [[0, 0], [1, 0], [1, 1], [0, 1]]
-                }]
+            device.getPrivacyMasks().then(mask => {
+                mask.masks = mask.masks?.filter(m => m.name === 'Scrypted Privacy Mask');
+                mask.masks ||= [];
+                mask.masks.push(
+                    {
+                        name: 'Scrypted Privacy Mask',
+                        points: [[0, 0], [1, 0], [1, 1], [0, 1]]
+                    }
+                )
+                device.setPrivacyMasks(mask);
             });
         }
         this.on = true;
