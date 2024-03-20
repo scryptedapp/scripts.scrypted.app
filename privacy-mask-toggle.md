@@ -37,7 +37,6 @@ class PrivacyMaskToggler extends ScryptedDeviceBase implements Settings, OnOff {
             const device = systemManager.getDeviceById<VideoCameraMask>(id);
             device.getPrivacyMasks().then(mask => {
                 mask.masks = mask.masks?.filter(m => m.name !== 'Scrypted Privacy Mask');
-                console.log('gottem', mask)
                 device.setPrivacyMasks(mask);
             });
         }
