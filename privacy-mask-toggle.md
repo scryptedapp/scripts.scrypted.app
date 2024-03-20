@@ -1,6 +1,6 @@
 # Privacy Mask Toggle
 
-This script can be used to toggle Privacy Masks on a group of cameras that support video masking. For example, this can be used to black out interior cameras with a Home/Away automation.
+This script creates a button that can can be used to toggle Privacy Masks on a group of cameras that support video masking. For example, this can be used to black out interior cameras with a Home/Away automation.
 
 ```ts
 class PrivacyMaskToggler extends ScryptedDeviceBase implements Settings, OnOff {
