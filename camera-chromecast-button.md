@@ -12,6 +12,14 @@ class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settin
     timeout: any;
     readonly DEFAULT_TIMEOUT_SECS = 60;
 
+    constructor(nativeId: string) {
+        super(nativeId);
+        // make this device a switch so it can be synced.
+        setTimeout(() => {
+            systemManager.getDeviceById(this.id).setType(ScryptedDeviceType.Switch);
+        });
+    }
+
     async turnOn() {
         const ids = this.getJSON('chromecasts') as string[];
         const camera = systemManager.getDeviceById<RTCSignalingChannel>(this.getJSON('camera') as string);

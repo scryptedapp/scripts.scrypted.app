@@ -8,10 +8,10 @@ class PTZButton extends ScryptedDeviceBase implements OnOff, Settings {
 
     constructor(nativeId: string) {
         super(nativeId);
-        // make this device a switch so homekit can sync it.
+        // make this device a switch so it can be synced.
         setTimeout(() => {
             systemManager.getDeviceById(this.id).setType(ScryptedDeviceType.Switch);
-        })
+        });
     }
 
     async turnOn() {

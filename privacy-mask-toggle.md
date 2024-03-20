@@ -1,15 +1,15 @@
-# Scrypted NVR Privacy Mode Toggle
+# Privacy Mask Toggle
 
-This script can be used to toggle Privacy Mode on a group of cameras that are recording with Scrypted NVR. For example, this can be used to toggle recording interior cameras with a Home/Away automation.
+This script can be used to toggle Privacy Masks on a group of cameras that support video masking. For example, this can be used to black out interior cameras with a Home/Away automation.
 
 ```ts
-class PrivacyToggler extends ScryptedDeviceBase implements Settings, OnOff {
+class PrivacyMaskToggler extends ScryptedDeviceBase implements Settings, OnOff {
     constructor(nativeId: string) {
         super(nativeId);
-        // make this device a switch so it can be synced.
+        // make this device a switch so homekit can sync it.
         setTimeout(() => {
             systemManager.getDeviceById(this.id).setType(ScryptedDeviceType.Switch);
-        });
+        })
     }
 
     async getSettings(): Promise<Setting[]> {
@@ -20,7 +20,7 @@ class PrivacyToggler extends ScryptedDeviceBase implements Settings, OnOff {
                 title: 'Devices',
                 description: 'The cameras on which the privacy mode will be toggled.',
                 multiple: true,
-                deviceFilter: `type === "${ScryptedDeviceType.Camera}" || type === "${ScryptedDeviceType.Doorbell}"`,
+                deviceFilter: `interfaces.includes("${ScryptedInterface.VideoCameraMask}")`,
                 value: this.getJSON('devices'),
             },
         ]
@@ -34,8 +34,8 @@ class PrivacyToggler extends ScryptedDeviceBase implements Settings, OnOff {
     async turnOff(): Promise<void> {
         const ids = this.getJSON('devices') as string[];
         for (const id of ids) {
-            const device = systemManager.getDeviceById<Settings>(id);
-            device.putSetting('recording:privacyMode', false);
+            const device = systemManager.getDeviceById<VideoCameraMask>(id);
+            device.setPrivacyMasks({ masks: [] });
         }
         this.on = false;
     }
@@ -43,8 +43,12 @@ class PrivacyToggler extends ScryptedDeviceBase implements Settings, OnOff {
     async turnOn(): Promise<void> {
         const ids = this.getJSON('devices') as string[];
         for (const id of ids) {
-            const device = systemManager.getDeviceById<Settings>(id);
-            device.putSetting('recording:privacyMode', true);
+            const device = systemManager.getDeviceById<VideoCameraMask>(id);
+            await device.setPrivacyMasks({
+                masks: [{
+                    points: [[0, 0], [1, 0], [1, 1], [0, 1]]
+                }]
+            });
         }
         this.on = true;
     }
@@ -59,5 +63,5 @@ class PrivacyToggler extends ScryptedDeviceBase implements Settings, OnOff {
     }
 }
 
-export default PrivacyToggler;
+export default PrivacyMaskToggler;
 ```

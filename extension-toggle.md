@@ -4,6 +4,14 @@ This script can be used automate toggling Extensions (`HomeKit`, `Scrypted NVR`,
 
 ```ts
 class ExtensionToggler extends ScryptedDeviceBase implements Settings, OnOff {
+    constructor(nativeId: string) {
+        super(nativeId);
+        // make this device a switch so it can be synced.
+        setTimeout(() => {
+            systemManager.getDeviceById(this.id).setType(ScryptedDeviceType.Switch);
+        });
+    }
+
     async getSettings(): Promise<Setting[]> {
         return [
             {

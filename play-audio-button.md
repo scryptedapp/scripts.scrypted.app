@@ -11,6 +11,14 @@ For Docker installations, the audio file must be mounted into the container.
 class PlayAudioButton extends ScryptedDeviceBase implements OnOff, Settings {
     timeout: any;
 
+    constructor(nativeId: string) {
+        super(nativeId);
+        // make this device a switch so it can be synced.
+        setTimeout(() => {
+            systemManager.getDeviceById(this.id).setType(ScryptedDeviceType.Switch);
+        });
+    }
+
     async turnOn() {
         const audio = this.getJSON('audio') as string || 'https://download.samplelib.com/mp3/sample-12s.mp3';
         this.on = true;
