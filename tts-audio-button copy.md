@@ -19,8 +19,13 @@ class TextToSpeechAudioButton extends ScryptedDeviceBase implements OnOff, Setti
     }
 
     async turnOn() {
-        const rawText = this.getJSON('audio') as string || 'Hello World';
-        const audioText = await mediaManager.createMediaObject(rawText, 'text/plain');
+        const str = this.getJSON('audio') as string || 'Hello World';
+        const text = await mediaManager.createMediaObject(str, 'text/plain');
+        const audioBuffer = await mediaManager.convertMediaObjectToBuffer(text, 'audio/*');
+        const filename = require('crypto').createHash('sha256').update(str).digest('hex');
+        const tmp = require('os').tmpdir();
+        const dst = require('path').join(tmp, filename + '.mp3');
+        require('fs').writeFileSync(dst, audioBuffer);
 
         this.on = true;
 
@@ -29,12 +34,19 @@ class TextToSpeechAudioButton extends ScryptedDeviceBase implements OnOff, Setti
             const speaker = systemManager.getDeviceById<MediaPlayer & Intercom & StartStop>(id);
 
             if (speaker.interfaces.includes(ScryptedInterface.MediaPlayer)) {
-                speaker.load(audioText, {
+                speaker.load(dst, {
                     mimeType: 'audio/mpeg',
                 });
             }
             else {
-                speaker.startIntercom(audioText)
+                const ffmpegInput: FFmpegInput = {
+                    inputArguments: [
+                        '-re',
+                        '-i', dst,
+                    ]
+                };
+                const mo = await mediaManager.createFFmpegMediaObject(ffmpegInput);
+                speaker.startIntercom(mo);
             }
         }
 
@@ -86,7 +98,7 @@ class TextToSpeechAudioButton extends ScryptedDeviceBase implements OnOff, Setti
     }
 
     async putSetting(key: string, value: SettingValue) {
-     this.storage.setItem(key, JSON.stringify(value));
+        this.storage.setItem(key, JSON.stringify(value));
         deviceManager.onDeviceEvent(this.nativeId, ScryptedInterface.Settings, undefined);
     }
 
