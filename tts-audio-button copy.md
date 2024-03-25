@@ -22,23 +22,28 @@ class TextToSpeechAudioButton extends ScryptedDeviceBase implements OnOff, Setti
         const str = this.getJSON('audio') as string || 'Hello World';
         const text = await mediaManager.createMediaObject(str, 'text/plain');
         const audioBuffer = await mediaManager.convertMediaObjectToBuffer(text, 'audio/*');
-        const filename = require('crypto').createHash('sha256').update(str).digest('hex');
-        const tmp = require('os').tmpdir();
-        const dst = require('path').join(tmp, filename + '.mp3');
-        require('fs').writeFileSync(dst, audioBuffer);
 
         this.on = true;
 
         const ids = this.getJSON('speakers') as string[];
         for (const id of ids) {
+            // media players will play back the audio file in real time
             const speaker = systemManager.getDeviceById<MediaPlayer & Intercom & StartStop>(id);
 
+            const mo = await mediaManager.createMediaObject(audioBuffer, 'audio/mpeg');
+
             if (speaker.interfaces.includes(ScryptedInterface.MediaPlayer)) {
-                speaker.load(dst, {
+                speaker.load(mo, {
                     mimeType: 'audio/mpeg',
                 });
             }
             else {
+                // intercoms need an ffmpeg flag to force realtime
+                const filename = require('crypto').createHash('sha256').update(str).digest('hex');
+                const tmp = require('os').tmpdir();
+                const dst = require('path').join(tmp, filename + '.mp3');
+                require('fs').writeFileSync(dst, audioBuffer);
+
                 const ffmpegInput: FFmpegInput = {
                     inputArguments: [
                         '-re',
