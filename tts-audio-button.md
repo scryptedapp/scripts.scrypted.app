@@ -1,4 +1,4 @@
-# Play Audio Button
+# Text To Speech Button
 
 This script creates a button that speaks a given line of text on cameras with two way audio or Chromecast devices. This can be used to create announcements.
 
