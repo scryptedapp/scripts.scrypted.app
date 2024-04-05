@@ -67,13 +67,6 @@ export default class DiscordWebhook extends ScryptedDeviceBase implements Notifi
 
         const payload = {
             content: options?.body || title,
-            embeds: !image ? undefined : [
-                {
-                    image: {
-                        url: image,
-                    },
-                }
-            ]
         };
 
         this.console.log(payload);
