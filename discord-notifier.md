@@ -4,10 +4,6 @@ This script can be used to deliver notifications to Discord.
 
 The script must be configured with the Discord Webhook URL which can be created in the Channel's Integration settings.
 
-::: tip
-This script requires the Scrypted Cloud plugin.
-:::
-
 ```ts
 export default class DiscordWebhook extends ScryptedDeviceBase implements Notifier, Settings {
     constructor(nativeId: ScryptedNativeId) {
@@ -32,14 +28,6 @@ export default class DiscordWebhook extends ScryptedDeviceBase implements Notifi
         this.onDeviceEvent(ScryptedInterface.Settings, undefined);
     }
 
-
-    async convertMediaObjectToUrl(mediaObject: MediaObject, toMimeType: string): Promise<string> {
-        const intermediate = await sdk.mediaManager.convertMediaObject(mediaObject, toMimeType);
-        const converted = await sdk.mediaManager.createMediaObject(intermediate, toMimeType);
-        const url = await sdk.mediaManager.convertMediaObject(converted, "text/x-uri" + ";short-lived=true");
-        return url.toString();
-    }
-
     async sendNotification(title: string, options?: NotifierOptions, media?: string | MediaObject, icon?: string | MediaObject): Promise<void> {
         const webhook = this.storage.getItem('webhook');
         if (!webhook) {
@@ -48,6 +36,8 @@ export default class DiscordWebhook extends ScryptedDeviceBase implements Notifi
         }
 
         let image: string;
+        const formData = new FormData();
+
         try {
             let m: MediaObject;
             if (typeof media === 'string') {
@@ -64,7 +54,10 @@ export default class DiscordWebhook extends ScryptedDeviceBase implements Notifi
             }
 
             if (m) {
-                image = await this.convertMediaObjectToUrl(m, 'image/jpeg');
+                const buffer = await mediaManager.convertMediaObjectToBuffer(m, 'image/jpeg');
+                formData.set('image.jpg', new Blob([buffer], {type: 'image/jpeg'}), 'image.jpg');
+                image = 'attachment://image.jpg"';
+                this.console.log('blobber');
             }
         }
         catch (e) {
@@ -85,15 +78,18 @@ export default class DiscordWebhook extends ScryptedDeviceBase implements Notifi
 
         this.console.log(payload);
 
+        formData.set('payload_json', JSON.stringify(payload));
+
         const result = await fetch(webhook, {
             method: 'POST',
             headers: {
-                "Content-Type": "application/json",
+                // "Content-Type": "multipart/form-data",
             },
-            body: JSON.stringify(payload)
+            body: formData,
         });
 
         console.log(result.status);
     }
 }
+
 ```
