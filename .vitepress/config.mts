@@ -29,6 +29,12 @@ export default defineConfig({
         text: 'General',
         items: [
           { text: 'Extension Toggle', link: '/extension-toggle' },
+        ]
+      },
+      {
+        text: 'Notifications',
+        items: [
+          { text: 'Discord Notifications', link: '/discord-notifier' },
           { text: 'Notification Filter', link: '/notification-filter' },
           { text: 'Notification Filter - Linked', link: '/notification-filter-device-linked' },
         ]
