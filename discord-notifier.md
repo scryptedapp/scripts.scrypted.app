@@ -10,6 +10,12 @@ This script requires the Scrypted Cloud plugin.
 
 ```ts
 export default class DiscordWebhook extends ScryptedDeviceBase implements Notifier, Settings {
+    constructor(nativeId: ScryptedNativeId) {
+        super(nativeId);
+        setTimeout(() => {
+            systemManager.getDeviceById(this.id).setType(ScryptedDeviceType.Notifier);
+        });
+    }
     async getSettings(): Promise<Setting[]> {
         return [
             {
