@@ -35,7 +35,7 @@ const image = await mediaManager.convertMediaObject<Image & MediaObject>(mo, 'x-
 const detectors = [
     // '@scrypted/coreml',
     '@scrypted/openvino',
-    '@scrypted/tensorflow-lite',
+    // '@scrypted/tensorflow-lite',
 ];
 
 const detectIterations = 1000;
