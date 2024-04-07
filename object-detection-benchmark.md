@@ -35,12 +35,14 @@ const image = await mediaManager.convertMediaObject<Image & MediaObject>(mo, 'x-
 const detectors = [
     // '@scrypted/coreml',
     '@scrypted/openvino',
-    // '@scrypted/tensorflow-lite',
+    '@scrypted/tensorflow-lite',
 ];
+
+const detectIterations = 1000;
 
 for (const id of detectors) {
     const d: ObjectDetection = systemManager.getDeviceById<ObjectDetection>(id);
-    console.log('starting');
+    console.log('starting', id);
     // await d.detectObjects(image);
 
     const model = await d.getDetectionModel();
@@ -63,12 +65,12 @@ for (const id of detectors) {
         close: () => image.close(),
     })
 
-
     const start = Date.now();
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < detectIterations; i++) {
         await Promise.all([d.detectObjects(media),d.detectObjects(media)]);
     }
     const end = Date.now();
-    console.log(id, 'done', end - start, 'ms');
+    const ms = end - start;
+    console.log(id, 'done', ms, 'ms', (detectIterations * 2) / (ms / 1000), 'detections per second');
 }
 ```
