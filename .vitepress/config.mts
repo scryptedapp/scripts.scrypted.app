@@ -44,6 +44,7 @@ export default defineConfig({
         items: [
           { text: 'Privacy Mask Toggle', link: '/privacy-mask-toggle' },
           { text: 'Pan/Tilt/Zoom Button', link: '/ptz-button' },
+          { text: 'Pan/Tilt/Zoom Speed', link: '/ptz-speed' },
           { text: 'Stream to Chromecast Button', link: '/camera-chromecast-button' },
         ],
       },
