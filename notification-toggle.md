@@ -1,6 +1,6 @@
 # Notification Toggle
 
-This script exposes a switch be used to disable notifications sent out from Scrypted. Common notifier plugins include `Pushover`, `Scrypted NVR`, etc. Sync this switch to your home automation platform of choice such as HomeKit or Home Assistant (using MQTT).
+This script exposes a switch toggles notifications delivery from Scrypted. Common notifier plugins include `Pushover`, `Scrypted NVR`, etc. Sync this switch to your home automation platform of choice such as HomeKit or Home Assistant (using MQTT) to control notification delivery.
 
 ```ts
 class NotifierToggleMixin extends MixinDeviceBase<Notifier> implements Notifier {
