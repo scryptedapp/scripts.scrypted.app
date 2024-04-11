@@ -36,7 +36,7 @@ export default defineConfig({
         items: [
           { text: 'Discord Notifications', link: '/discord-notifier' },
           { text: 'Notification Filter', link: '/notification-filter' },
-          { text: 'Notification Filter - Linked', link: '/notification-filter-device-linked' },
+          { text: 'Notification Toggle', link: '/notification-toggle' },
         ]
       },
       {
