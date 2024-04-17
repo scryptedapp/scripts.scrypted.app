@@ -26,7 +26,7 @@ Tensorflow-Lite uses the EfficientDet-Lite0 model by default, since yolov8n suff
 
 ## Script
 
-This script will run 1000 iterations of 2 detections at a time (to test/validate concurrency). The test includes the time it takes to upload the input image to the object detection processor.
+This script will run 250 iterations of 8 detections at a time (to test concurrency and batching). The test includes the time it takes to upload the input image to the object detection processor.
 
 ```ts
 const mo = await mediaManager.createMediaObjectFromUrl('https://user-images.githubusercontent.com/73924/230690188-7a25983a-0630-44e9-9e2d-b4ac150f1524.jpg');
@@ -38,7 +38,7 @@ const detectors = [
     // '@scrypted/tensorflow-lite',
 ];
 
-const detectIterations = 1000;
+const detectIterations = 250;
 
 for (const id of detectors) {
     const d: ObjectDetection = systemManager.getDeviceById<ObjectDetection>(id);
@@ -67,7 +67,16 @@ for (const id of detectors) {
 
     const start = Date.now();
     for (let i = 0; i < detectIterations; i++) {
-        await Promise.all([d.detectObjects(media),d.detectObjects(media)]);
+        await Promise.all([
+            d.detectObjects(media, { batch: 4 }),
+            d.detectObjects(media),
+            d.detectObjects(media, { batch: 4 }),
+            d.detectObjects(media),
+            d.detectObjects(media),
+            d.detectObjects(media),
+            d.detectObjects(media),
+            d.detectObjects(media),
+        ]);
     }
     const end = Date.now();
     const ms = end - start;
