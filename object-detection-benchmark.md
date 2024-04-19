@@ -11,14 +11,14 @@ The script below runs the benchmark on OpenVINO. Modify the script to run it on 
 
 Below are benchark times that can be expected from various servers. 
 
-|Server|yolov8n 320|EfficientDet-Lite0|yolov9c 320|
-|-|-|-|-|
-|Apple Silicon M1 Ultra|5 seconds|N/A|7 seconds|
-|Intel 13500H|10 seconds|N/A|43 seconds|
-|2 x Mini PCIe Coral|19 seconds|25 seconds|N/A|
-|Intel N100|25 seconds|N/A|152 seconds|
-|1 x Mini PCIe Coral|38 seconds|50 seconds|N/A|
-|1 x USB Coral|38 seconds|89 seconds|N/A|
+|Server|yolov8n 320|EfficientDet-Lite0|yolov9c 320|yolov6n 320|
+|-|-|-|-|-|
+|Apple Silicon M1 Ultra|5 seconds|N/A|7 seconds|N/A|
+|Intel 13500H|10 seconds|N/A|43 seconds|N/A|
+|2 x Mini PCIe Coral|19 seconds|25 seconds|N/A|N/A|
+|Intel N100|25 seconds|N/A|152 seconds|N/A|
+|1 x Mini PCIe Coral|38 seconds|50 seconds|21 seconds|N/A|
+|1 x USB Coral|38 seconds|89 seconds|N/A|N/A|
 
 ::: tip
 Tensorflow-Lite uses the EfficientDet-Lite0 model by default, since yolov8n suffers from accuracy loss on int8 quantization. The yolov8n benchmark is listed for reference purposes.
