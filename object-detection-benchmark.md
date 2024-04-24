@@ -80,6 +80,6 @@ for (const id of detectors) {
     }
     const end = Date.now();
     const ms = end - start;
-    console.log(id, 'done', ms, 'ms', (detectIterations * 2) / (ms / 1000), 'detections per second');
+    console.log(id, 'done', ms, 'ms', (detectIterations * 8) / (ms / 1000), 'detections per second');
 }
 ```
