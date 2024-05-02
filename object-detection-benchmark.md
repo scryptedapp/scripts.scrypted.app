@@ -14,6 +14,7 @@ Below are benchark times that can be expected from various servers.
 |Server|yolov8n 320|EfficientDet-Lite0|yolov9c 320|yolov6n 320|
 |-|-|-|-|-|
 |Apple Silicon M1 Ultra|5 seconds|N/A|7 seconds|5 seconds|
+|NVIDIA 4090|7 seconds|N/A|53 seconds|7 seconds|
 |Intel 13500H|10 seconds|N/A|43 seconds|11 seconds|
 |2 x Mini PCIe Coral|19 seconds?|25 seconds|N/A|N/A|
 |Intel N100|25 seconds|N/A|152 seconds|27 seconds|
