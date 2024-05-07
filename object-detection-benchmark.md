@@ -35,11 +35,15 @@ const image = await mediaManager.convertMediaObject<Image & MediaObject>(mo, 'x-
 
 const detectors = [
     // '@scrypted/coreml',
+    // '@scrypted/onnx',
     '@scrypted/openvino',
     // '@scrypted/tensorflow-lite',
+    // '@scrypted/rknn',
 ];
 
-const detectIterations = 250;
+const simulatedCameras = 4;
+const batch = 4;
+const batchesPerCamera = 125;
 
 for (const id of detectors) {
     const d: ObjectDetection = systemManager.getDeviceById<ObjectDetection>(id);
@@ -67,20 +71,29 @@ for (const id of detectors) {
     })
 
     const start = Date.now();
-    for (let i = 0; i < detectIterations; i++) {
-        await Promise.all([
-            d.detectObjects(media, { batch: 4 }),
-            d.detectObjects(media),
-            d.detectObjects(media, { batch: 4 }),
-            d.detectObjects(media),
-            d.detectObjects(media),
-            d.detectObjects(media),
-            d.detectObjects(media),
-            d.detectObjects(media),
-        ]);
+
+    let detections = 0;
+    const simulateCameraDetections = async () => {
+        for (let i = 0; i < batchesPerCamera; i++) {
+            await Promise.all([
+                d.detectObjects(media, { batch }),
+                d.detectObjects(media),
+                d.detectObjects(media),
+                d.detectObjects(media),
+            ]);
+            detections += batch;
+        }
+    };
+
+    const simulated: Promise<void>[] = [];
+    for (let i = 0; i < simulatedCameras; i++) {
+        simulated.push(simulateCameraDetections());
     }
+    
+    await Promise.all(simulated);
+
     const end = Date.now();
     const ms = end - start;
-    console.log(id, 'done', ms, 'ms', (detectIterations * 8) / (ms / 1000), 'detections per second');
+    console.log(id, 'done', ms, 'ms', detections, 'detections', detections / (ms / 1000), 'detections per second');
 }
 ```
