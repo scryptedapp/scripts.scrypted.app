@@ -140,6 +140,7 @@ for (const id of detectors) {
 
     try {
         const model = await d.getDetectionModel();
+        console.log('Model', model);
         const bytes = await image.toBuffer({
             resize: {
                 width: model.inputSize[0],
