@@ -30,70 +30,166 @@ Tensorflow-Lite uses the EfficientDet-Lite0 model by default, since yolov8n suff
 This script will run 250 iterations of 8 detections at a time (to test concurrency and batching). The test includes the time it takes to upload the input image to the object detection processor.
 
 ```ts
+const os = require('os');
+const { execSync } = require('child_process');
+
 const mo = await mediaManager.createMediaObjectFromUrl('https://user-images.githubusercontent.com/73924/230690188-7a25983a-0630-44e9-9e2d-b4ac150f1524.jpg');
 const image = await mediaManager.convertMediaObject<Image & MediaObject>(mo, 'x-scrypted/x-scrypted-image');
-
 const detectors = [
+    '@scrypted/openvino',
+    // Uncomment other detectors if available
     // '@scrypted/coreml',
     // '@scrypted/onnx',
-    '@scrypted/openvino',
     // '@scrypted/tensorflow-lite',
     // '@scrypted/rknn',
 ];
-
 const simulatedCameras = 4;
 const batch = 4;
 const batchesPerCamera = 125;
 
-for (const id of detectors) {
-    const d: ObjectDetection = systemManager.getDeviceById<ObjectDetection>(id);
-    console.log('starting', id);
-    // await d.detectObjects(image);
+function logProgress(current, total, startTime) {
+    const percentage = Math.floor((current / total) * 100);
+    if (percentage === 25 || percentage === 50) {
+        const elapsedTime = (Date.now() - startTime) / 1000;
+        const estimatedTotalTime = (elapsedTime / current) * total;
+        const remainingTime = Math.max(0, estimatedTotalTime - elapsedTime);
+        console.log(`Progress: ${percentage}% - Est. remaining time: ${remainingTime.toFixed(1)}s`);
+    }
+}
 
-    const model = await d.getDetectionModel();
-    const bytes = await image.toBuffer({
-        resize: {
-            width: model.inputSize[0],
-            height: model.inputSize[1],
-        },
-        format: model.inputFormat,
-    });
+function getCPUInfo() {
+    try {
+        const cpus = os.cpus();
+        return cpus[0].model;
+    } catch (error) {
+        return 'Not found';
+    }
+}
 
-    // cache a preconverted image to remove that from benchmark.
-    const media: Image & MediaObject = await sdk.mediaManager.createMediaObject(bytes, 'x-scrypted/x-scrypted-image', {
-        sourceId: image.sourceId,
-        width: model.inputSize[0],
-        height: model.inputSize[1],
-        format: null,
-        toBuffer: async (options: ImageOptions) => bytes,
-        toImage: undefined,
-        close: () => image.close(),
-    })
+function getMemoryInfo() {
+    try {
+        const totalMem = os.totalmem() / (1024 * 1024 * 1024);
+        const freeMem = os.freemem() / (1024 * 1024 * 1024);
+        return `Total: ${totalMem.toFixed(2)} GB, Free: ${freeMem.toFixed(2)} GB`;
+    } catch (error) {
+        return 'Not found';
+    }
+}
 
-    const start = Date.now();
+function getCoreTemp() {
+    const possiblePaths = [
+        '/sys/class/thermal/thermal_zone0/temp',
+        '/sys/class/hwmon/hwmon0/temp1_input',
+        '/sys/class/hwmon/hwmon1/temp1_input',
+        '/sys/class/hwmon/hwmon2/temp1_input'
+    ];
 
-    let detections = 0;
-    const simulateCameraDetections = async () => {
-        for (let i = 0; i < batchesPerCamera; i++) {
-            await Promise.all([
-                d.detectObjects(media, { batch }),
-                d.detectObjects(media),
-                d.detectObjects(media),
-                d.detectObjects(media),
-            ]);
-            detections += batch;
+    for (const path of possiblePaths) {
+        try {
+            const temp = execSync(`cat ${path}`).toString().trim();
+            const tempValue = parseFloat(temp) / 1000;
+            if (!isNaN(tempValue) && tempValue > -273 && tempValue < 200) {
+                return tempValue.toFixed(1) + ' °C';
+            }
+        } catch (error) {
+            // Continue to next path if this one fails
         }
-    };
+    }
 
-    const simulated: Promise<void>[] = [];
-    for (let i = 0; i < simulatedCameras; i++) {
-        simulated.push(simulateCameraDetections());
+    try {
+        // Try using lm-sensors if available
+        const sensors = execSync('sensors').toString();
+        const match = sensors.match(/Core 0:\s+\+(\d+\.\d+)°C/);
+        if (match) {
+            return parseFloat(match[1]).toFixed(1) + ' °C';
+        }
+    } catch (error) {
+        // lm-sensors not available or failed
+    }
+
+    return 'Not found';
+}
+
+console.log('########################');
+console.log(new Date().toLocaleString());
+console.log('########################');
+console.log('NVR Plugin Version:', systemManager.getDeviceByName('@scrypted/nvr')?.info?.version || 'Not found');
+console.log('CPU Model:', getCPUInfo());
+console.log('Memory:', getMemoryInfo());
+console.log('Initial Core Temp:', getCoreTemp());
+console.log('OS Release:', os.release() || 'Not found');
+
+for (const id of detectors) {
+    const d = systemManager.getDeviceById(id);
+    if (!d) {
+        console.log(`${id} not found, skipping.`);
+        continue;
     }
     
-    await Promise.all(simulated);
+    console.log(`\nStarting ${id}`);
+    console.log(`${id} Plugin Version:`, d.info?.version || 'Not found');
+    console.log('Settings:');
+    try {
+        const settings = await d.getSettings();
+        for (const setting of settings) {
+            console.log(`  ${setting.title}: ${setting.value}`);
+        }
+    } catch (error) {
+        console.log('  Unable to retrieve settings');
+    }
 
-    const end = Date.now();
-    const ms = end - start;
-    console.log(id, 'done', ms, 'ms', detections, 'detections', detections / (ms / 1000), 'detections per second');
+    try {
+        const model = await d.getDetectionModel();
+        const bytes = await image.toBuffer({
+            resize: {
+                width: model.inputSize[0],
+                height: model.inputSize[1],
+            },
+            format: model.inputFormat,
+        });
+        const media = await sdk.mediaManager.createMediaObject(bytes, 'x-scrypted/x-scrypted-image', {
+            sourceId: image.sourceId,
+            width: model.inputSize[0],
+            height: model.inputSize[1],
+            format: null,
+            toBuffer: async (options) => bytes,
+            toImage: undefined,
+            close: () => image.close(),
+        })
+        const start = Date.now();
+        let detections = 0;
+        const totalDetections = simulatedCameras * batchesPerCamera * batch;
+
+        console.log("Starting benchmark...");
+
+        const simulateCameraDetections = async () => {
+            for (let i = 0; i < batchesPerCamera; i++) {
+                await Promise.all([
+                    d.detectObjects(media, { batch }),
+                    d.detectObjects(media),
+                    d.detectObjects(media),
+                    d.detectObjects(media),
+                ]);
+                detections += batch;
+                logProgress(detections, totalDetections, start);
+            }
+        };
+
+        const simulated = [];
+        for (let i = 0; i < simulatedCameras; i++) {
+            simulated.push(simulateCameraDetections());
+        }
+        
+        await Promise.all(simulated);
+        const end = Date.now();
+        const ms = end - start;
+        console.log(`\n${id} benchmark complete:`);
+        console.log(`Total time: ${ms} ms`);
+        console.log(`Total detections: ${detections}`);
+        console.log(`Detection rate: ${(detections / (ms / 1000)).toFixed(2)} detections per second`);
+        console.log(`Final Core Temp: ${getCoreTemp()}`);
+    } catch (error) {
+        console.log(`Error running benchmark for ${id}:`, error.message);
+    }
 }
 ```
