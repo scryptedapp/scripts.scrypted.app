@@ -120,7 +120,7 @@ console.log('Initial Core Temp:', getCoreTemp());
 console.log('OS Release:', os.release() || 'Not found');
 
 for (const id of detectors) {
-    const d = systemManager.getDeviceById(id);
+    const d = systemManager.getDeviceById<Settings & ObjectDetection>(id);
     if (!d) {
         console.log(`${id} not found, skipping.`);
         continue;
