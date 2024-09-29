@@ -29,6 +29,7 @@ export default defineConfig({
         text: 'General',
         items: [
           { text: 'Extension Toggle', link: '/extension-toggle' },
+          { text: 'Minimal Switch', link: '/minimal-switch' },
         ]
       },
       {
