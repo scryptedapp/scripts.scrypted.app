@@ -1,4 +1,4 @@
-# Pan/Tilt/Zoom Button
+# Pan/Tilt/Zoom Move Button
 
 This script creates a button that can pan, tilt, or zoom a PTZ camera. This button can then be synced to platforms like HomeKit, which do not natively support PTZ commands.
 

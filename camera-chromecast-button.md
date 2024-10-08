@@ -8,9 +8,10 @@ Casting to Chromecast requires the Chromecast and Scrypted Cloud plugins.
 
 
 ```ts
+const DEFAULT_TIMEOUT_SECS = 60;
+
 class ChromecastCameraButton extends ScryptedDeviceBase implements OnOff, Settings {
     timeout: any;
-    readonly DEFAULT_TIMEOUT_SECS = 60;
 
     constructor(nativeId: string) {
         super(nativeId);
