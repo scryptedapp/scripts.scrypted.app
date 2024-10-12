@@ -26,7 +26,7 @@ class PTZButton extends ScryptedDeviceBase implements OnOff, Settings {
 
         this.storageSettings.settings.preset.onGet = async () => {
             const ptzCamera: ScryptedDevice & PanTiltZoom = this.storageSettings.values.ptzCamera;
-            const choices = Object.values(ptzCamera.ptzCapabilities?.presets || {});
+            const choices = Object.values(ptzCamera?.ptzCapabilities?.presets || {});
             return {
                 choices,
             }
