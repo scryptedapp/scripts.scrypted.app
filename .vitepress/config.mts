@@ -63,6 +63,7 @@ export default defineConfig({
         items: [
           { text: 'Privacy Mode Toggle', link: '/nvr/privacy-mode-toggle' },
           { text: 'Detection Benchmark', link: '/object-detection-benchmark' },
+          { text: 'Face Recognition Unlock', link: '/face-recognition-unlock' },
         ]
       },
     ],
