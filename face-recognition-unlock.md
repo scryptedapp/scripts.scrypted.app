@@ -5,7 +5,7 @@ This script/process allows a face or fingerprint detection to unlock a door.
 ## Smart Motion Sensor
 
 1. Create a `Smart Motion Sensor` inside the Video Analysis Plugin.
-2. Select the doorbell.
+2. When creating the `Smart Motion Sensor` select your doorbell camera as the `Object Detector`.
 3. Set the `Detection` type to `face` (Scrypted NVR) or `fingerprintIdentified` (Unifi Protect).
 4. Set the `Object Detection Timeout` to `15` to reset the automation after 15 seconds.
 5. In the `Recognition` section.
