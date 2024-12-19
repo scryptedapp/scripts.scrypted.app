@@ -20,7 +20,7 @@ This step is optional/recommended as it provides the person positive audio feedb
 
 1. Create a new `Automation` in Scrypted.
 2. Set the `Trigger` to the new `Smart Motion Sensor`.
-3. set the `Trigger Condition` to `eventData === true` so it only triggers when motion detection starts.
+3. Set the `Trigger Condition` to `eventData === true` so it only triggers when motion detection starts.
 4. Create an `Action` of type `Script`, replacing the `Doorbell` device name with the one matching your doorbell:
 
 ```ts
