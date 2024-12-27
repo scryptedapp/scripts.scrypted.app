@@ -8,9 +8,9 @@ This script/process allows a face or fingerprint detection to unlock a door.
 2. When creating the `Smart Motion Sensor` select your doorbell camera as the `Object Detector`.
 3. Set the `Detection` type to `face` ([Scrypted NVR](https://docs.scrypted.app/scrypted-nvr/)) or `fingerprintIdentified` (Unifi Protect).
 4. Set the `Object Detection Timeout` to `15` to reset the automation after 15 seconds.
-5. In the `Recognition` section.
+5. In the `Recognition` settings on the `Smart Motion Sensor`: 
   * If recognizing faces, enter the name of the person(s) to match. These names must match the names labelled within Scrypted NVR.
-  * If recognizing fingerprints, any known fingerprint will trigger the sensor. Specific fingerprints can be filtered by entering the `Unifi` user UUID which is captured in the logs.
+  * If recognizing fingerprints, any known fingerprint will trigger the sensor. Specific fingerprints can be filtered by entering the `Unifi` user UUID which is captured in the logs for the sensor.
 6. Sync this new `Smart Motion Sensor` with `HomeKit` or `Home Assistant`.
 7. Set up an automation in `HomeKit` or `Home Assistant` to unlock the door when the sensor detects motion.
 
