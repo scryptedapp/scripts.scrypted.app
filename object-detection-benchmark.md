@@ -21,10 +21,6 @@ Below are benchark times that can be expected from various servers.
 |1 x Mini PCIe Coral|21 seconds|50 seconds|21 seconds|20 seconds|
 |1 x USB Coral|20 seconds|89 seconds|Model Too Large|20 seconds|
 
-::: tip
-Tensorflow-Lite uses the EfficientDet-Lite0 model by default, since yolov8n suffers from accuracy loss on int8 quantization. The yolov8n benchmark is listed for reference purposes.
-:::
-
 ## Script
 
 This script will run 250 iterations of 8 detections at a time (to test concurrency and batching). The test includes the time it takes to upload the input image to the object detection processor.
