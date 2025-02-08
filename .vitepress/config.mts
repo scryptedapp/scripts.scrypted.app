@@ -48,6 +48,7 @@ export default defineConfig({
           { text: 'Pan/Tilt/Zoom Preset Button', link: '/ptz-preset-button' },
           { text: 'Pan/Tilt/Zoom Speed', link: '/ptz-speed' },
           { text: 'Stream to Chromecast Button', link: '/camera-chromecast-button' },
+          { text: 'Temperature Overlay', link: '/temperature-overlay' },
         ],
       },
       {
