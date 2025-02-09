@@ -33,6 +33,15 @@ export default class CameraTemperatureOverlay extends ScryptedDeviceBase impleme
             onPut: () => {
                 this.forecastUrl = undefined;
                 this.refreshTemperature();
+                this.positionListener?.removeListener();
+                this.positionListener = undefined;
+                if (this.storageSettings.values.linkedPositionSensor) {
+                    const positionSensor = this.storageSettings.values.linkedPositionSensor as ScryptedDevice & PositionSensor;
+                    this.positionListener = positionSensor.listen(ScryptedInterface.PositionSensor, () => {
+                        this.forecastUrl = undefined;
+                        this.refreshTemperature();
+                    });
+                }
             },
         },
         latitude: {
@@ -74,6 +83,7 @@ export default class CameraTemperatureOverlay extends ScryptedDeviceBase impleme
     });
     forecastUrl: Promise<string>;
     overlayIds = new Map<string, Promise<string>>();
+    positionListener: EventListenerRegister;
 
     constructor(nativeId: ScryptedNativeId) {
         super(nativeId);
