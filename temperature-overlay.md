@@ -22,6 +22,10 @@ export default class CameraTemperatureOverlay extends ScryptedDeviceBase impleme
             value: this.storage.getItem('linkedPositionSensor'),
             deviceFilter: `interfaces.includes('${ScryptedInterface.PositionSensor}')`,
             type: 'device',
+            onPut: () => {
+                this.forecastUrl = undefined;
+                this.refreshTemperature();
+            },
         },
         latitude: {
             type: 'number',
