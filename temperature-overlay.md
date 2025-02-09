@@ -11,7 +11,7 @@ Once configured, sensor values update automatically, providing a live feed of en
 This script can display the current outside temperature on cameras that support on screen overlays. Enable and position the overlay on the camera's web portal. Then use this script to select and update the overlay with the current temperature.
 
 ::: tip
-The overlay must first be enabled in the cameras's web potral before the overlay. Then select the camera in the script and `Save` to see the enabled overlays in the `Log`. Then enter the desired overlay id into the scripts's Settings. If the camera is not configured first, no overlay ids will be logged by the script.
+The overlay must first be enabled in the cameras's web portal before the overlay. Then select the camera in the script and `Save` to see the enabled overlays in the `Log`. Then enter the desired overlay id into the scripts's Settings. If the camera is not configured first, no overlay ids will be logged by the script.
 :::
 
 
