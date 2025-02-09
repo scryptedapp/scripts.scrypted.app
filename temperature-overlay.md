@@ -18,7 +18,7 @@ export default class CameraTemperatureOverlay extends ScryptedDeviceBase impleme
         },
         linkedPositionSensor: {
             title: 'Linked PositionSensor',
-            description: 'The position sensor linked with this sunrise-sunset sensor for geolocation data.',
+            description: 'A PositionSensor to provide geolocation data.',
             value: this.storage.getItem('linkedPositionSensor'),
             deviceFilter: `interfaces.includes('${ScryptedInterface.PositionSensor}')`,
             type: 'device',
