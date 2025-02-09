@@ -16,9 +16,17 @@ export default class CameraTemperatureOverlay extends ScryptedDeviceBase impleme
             defaultValue: 'C',
             onPut: () => this.refreshTemperature(),
         },
+        linkedPositionSensor: {
+            title: 'Linked PositionSensor',
+            description: 'The position sensor linked with this sunrise-sunset sensor for geolocation data.',
+            value: this.storage.getItem('linkedPositionSensor'),
+            deviceFilter: `interfaces.includes('${ScryptedInterface.PositionSensor}')`,
+            type: 'device',
+        },
         latitude: {
             type: 'number',
             title: 'Latitude',
+            description: 'Takes precedence over the linked PositionSensor.',
             onPut: () => {
                 this.forecastUrl = undefined;
                 this.refreshTemperature();
@@ -27,6 +35,7 @@ export default class CameraTemperatureOverlay extends ScryptedDeviceBase impleme
         longitude: {
             type: 'number',
             title: 'Longitude',
+            description: 'Takes precedence over the linked PositionSensor.',
             onPut: () => {
                 this.forecastUrl = undefined;
                 this.refreshTemperature();
@@ -70,7 +79,12 @@ export default class CameraTemperatureOverlay extends ScryptedDeviceBase impleme
     }
 
     async refreshTemperature() {
-        if (!this.storageSettings.values.latitude || !this.storageSettings.values.longitude || !this.storageSettings.values.cameras.length) {
+        if (
+            (
+                !this.storageSettings.values.linkedPositionSensor && (!this.storageSettings.values.latitude || !this.storageSettings.values.longitude)
+            )
+            || !this.storageSettings.values.cameras.length
+        ) {
             this.console.warn('Camera temperature overlay is not configured');
             return;
         }
@@ -85,7 +99,10 @@ export default class CameraTemperatureOverlay extends ScryptedDeviceBase impleme
 
         if (!this.forecastUrl) {
             this.forecastUrl = (async () => {
-                const url = new URL(`https://api.weather.gov/points/${this.storageSettings.values.latitude},${this.storageSettings.values.longitude}`);
+                const positionSensor = this.storageSettings.values.linkedPositionSensor as ScryptedDevice & PositionSensor;
+                const latitude = this.storageSettings.values.latitude || positionSensor.position.latitude;
+                const longitude = this.storageSettings.values.longitude || positionSensor.position.longitude;
+                const url = new URL(`https://api.weather.gov/points/${latitude},${longitude}`);
                 const response = await fetch(url);
                 const json = await response.json();
                 return json.properties.forecastGridData;
