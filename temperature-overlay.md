@@ -1,3 +1,11 @@
+# Camera Sensor Overlay
+
+The [OSD Manager](https://github.com/apocaliss92/scrypted-osd-manager) plugin works with the [Home Assistant](https://github.com/scryptedapp/homeassistant) plugin to display sensor data, such as temperature, humidity, and locks, directly on a camera’s on-screen display.
+
+In the `Home Assistant` plugin, select the entities you’d like to add as devices to Scrypted  (e.g., `sensor.living_room_temperature`). Then, enable the `OSD Manager` plugin on the desired camera and set the 'Overlay Type' to Device
+
+Once configured, sensor values update automatically, providing a live feed of environmental conditions directly on the camera’s display.
+
 # Temperature Overlay
 
 This script can display the current outside temperature on cameras that support on screen overlays. Enable and position the overlay on the camera's web portal. Then use this script to select and update the overlay with the current temperature.
