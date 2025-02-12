@@ -137,7 +137,7 @@ await Promise.allSettled(detectors.map(async id => {
     console.log(`\nStarting ${id}`);
     console.log(`${id} Plugin Version:`, d.info?.version || 'Not found');
 
-    async function runClusterWorkerDetector(d: ObjectDetection & Settings) {
+    async function runClusterWorkerDetector(clusterWorkerName: string, d: ObjectDetection & Settings) {
         console.log('Settings:');
         try {
             const settings = await d.getSettings();
@@ -148,41 +148,41 @@ await Promise.allSettled(detectors.map(async id => {
         catch (error) {
             console.log('  Unable to retrieve settings');
         }
-        try {
-            await runDetector(d);
 
-            const end = Date.now();
-            if (!clusterDps)
-                clusterDps = completedDetections / ((end - start) / 1000); 
+        await runDetector(d);
 
-            const ms = end - start;
-            console.log(`\n${id} benchmark complete:`);
-            console.log(`Total time: ${ms} ms`);
-            const detections = batchesPerCamera * simulatedCameras * batch;
-            console.log(`Total detections: ${detections}`);
-            console.log(`Detection rate: ${(detections / (ms / 1000)).toFixed(2)} detections per second`);
-            totalDetectors++;
-        }
-        catch (error) {
-            console.log(`Error running benchmark for ${id}:`, error.message);
-        }
+        const end = Date.now();
+        if (!clusterDps)
+            clusterDps = completedDetections / ((end - start) / 1000);
+
+        const ms = end - start;
+        console.log(`\n${clusterWorkerName ? clusterWorkerName + ' ' : ''}${id} benchmark complete:`);
+        console.log(`Total time: ${ms} ms`);
+        const detections = batchesPerCamera * simulatedCameras * batch;
+        console.log(`Total detections: ${detections}`);
+        console.log(`Detection rate: ${(detections / (ms / 1000)).toFixed(2)} detections per second`);
+        totalDetectors++;
     }
 
     if (!sdk.clusterManager?.getClusterMode?.()) {
-        await runClusterWorkerDetector(d);
+        await runClusterWorkerDetector(undefined, d);
     }
     else {
         const workers = await sdk.clusterManager.getClusterWorkers();
         await Promise.allSettled(Object.values(workers).map(async worker => {
             if (!worker.labels.includes(id))
                 return;
-            const forked = await d.forkInterface<ObjectDetection & Settings>(ScryptedInterface.ObjectDetection, {
-                clusterWorkerId: worker.id,
-            });
-            console.log('Running on cluster worker', worker.name);
-            await runClusterWorkerDetector(forked);
+            try {
+                const forked = await d.forkInterface<ObjectDetection & Settings>(ScryptedInterface.ObjectDetection, {
+                    clusterWorkerId: worker.id,
+                });
+                console.log('Running on cluster worker', worker.name);
+                await runClusterWorkerDetector(worker.name, forked);
+            }
+            catch (e) {
+                console.log(`Error running benchmark for ${id}:`, e);
+            }
         }));
-
     }
 }));
 
