@@ -38,6 +38,7 @@ export default defineConfig({
           { text: 'Discord Notifications', link: '/discord-notifier' },
           { text: 'Notification Filter', link: '/notification-filter' },
           { text: 'Notification Toggle', link: '/notification-toggle' },
+          { text: 'OpenAI Notifications', link: '/openai-notifications' },
         ]
       },
       {
