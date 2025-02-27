@@ -13,6 +13,15 @@ function createMessageTemplate(systemPrompt: string, model: string, imageUrl: st
                 role: "system",
                 content: systemPrompt + ' ' + schema,
             },
+            {function createMessageTemplate(systemPrompt: string, model: string, imageUrl: string, metadata: any) {
+    const schema = "The response must be in JSON format with a message 'title', 'subtitle', and 'body'. The title and subtitle must not be more than 24 characters each. The body must not be more than 130 characters."
+    return {
+        model,
+        messages: [
+            {
+                role: "system",
+                content: systemPrompt + ' ' + schema,
+            },
             {
                 role: "user",
                 content: [
@@ -74,13 +83,17 @@ class OpenAINotifier extends MixinDeviceBase<Notifier> implements Notifier {
             imageUrl = `data:image/jpeg;base64,${b64}`;
         }
 
+        this.console.log(options);
+
         const messageTemplate = createMessageTemplate(
             this.openaiProvider.storageSettings.values.systemPrompt,
             this.openaiProvider.storageSettings.values.model,
             imageUrl,
-            options,
+            {
+                title,
+                ...options,
+            },
         );
-        this.console.log(messageTemplate);
 
         try {
 
@@ -93,7 +106,6 @@ class OpenAINotifier extends MixinDeviceBase<Notifier> implements Notifier {
                 body: JSON.stringify(messageTemplate),
             });
             const data = await response.json();
-            this.console.log(data);
             const content = data.choices[0].message.content;
             const json = JSON.parse(content);
             this.console.log(json);
