@@ -1,4 +1,4 @@
-# Discord Notifications
+# OpenAI Notifications
 
 This script can be used to intercept and modify image notifications using an OpenAI (or compatible server) vision model.
 
