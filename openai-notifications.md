@@ -135,7 +135,7 @@ export default class OpenAIMixinProvider extends ScryptedDeviceBase implements M
             title: 'System Prompt',
             type: 'textarea',
             description: 'The system prompt used to generate the notification.',
-            defaultValue: 'Create a notification suitable description of the image provided by the user. Describe the people, animals, or vehicles in the image. Do not describe scenery or static objects. The original notification metadata may be provided and can be used to provide additional context for the new notiifcation, but should not be used verbatim.',
+            defaultValue: 'Create a notification suitable description of the image provided by the user. Describe the people, animals, or vehicles in the image. Do not describe scenery or static objects. The original notification metadata may be provided and can be used to provide additional context for the new notification, but should not be used verbatim.',
         }
     });
 
