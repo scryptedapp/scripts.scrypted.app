@@ -81,8 +81,8 @@ class OpenAINotifier extends MixinDeviceBase<Notifier> implements Notifier {
             this.openaiProvider.storageSettings.values.model,
             imageUrl,
             {
-                title,
-                ...options,
+                // title,
+                // ...options,
             },
         );
 
