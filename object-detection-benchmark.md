@@ -33,6 +33,7 @@ const mo = await mediaManager.createMediaObjectFromUrl('https://user-images.gith
 const image = await mediaManager.convertMediaObject<Image & MediaObject>(mo, 'x-scrypted/x-scrypted-image');
 const detectors = [
     '@scrypted/openvino',
+    '@scrypted/ncnn',
     '@scrypted/coreml',
     '@scrypted/onnx',
     '@scrypted/tensorflow-lite',
