@@ -1,7 +1,8 @@
 # OpenAI Notifications
 
-::: Tip
+::: tip
 Install the Scrypted LLM plugin to connect Scrypted to an LLM provider like ChatGPT or Claude. The LLM Plugin also supports running a local LLM server via [llama.cpp](https://github.com/ggml-org/llama.cpp) on capable hardware such as Apple Silicon or NVIDIA GPUs. 
+:::
 
 This script can be used to intercept and modify image notifications using an OpenAI (or compatible server) vision model.
 
