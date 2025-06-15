@@ -4,6 +4,7 @@ This script can be used to intercept and modify image notifications using an Ope
 
 
 ```ts
+
 function createMessageTemplate(systemPrompt: string, model: string, imageUrl: string, metadata: any) {
     const schema = "The response must be in JSON format with a message 'title', 'subtitle', and 'body'. The title and subtitle must not be more than 24 characters each. The body must not be more than 130 characters."
     return {
@@ -87,16 +88,8 @@ class OpenAINotifier extends MixinDeviceBase<Notifier> implements Notifier {
         );
 
         try {
-
-            const response = await fetch(this.openaiProvider.storageSettings.values.apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.openaiProvider.storageSettings.values.apiKey}`
-                },
-                body: JSON.stringify(messageTemplate),
-            });
-            const data = await response.json();
+            const device = this.openaiProvider.storageSettings.values.chatCompletion as ScryptedDevice & ChatCompletion;
+            const data = await device.getChatCompletion(messageTemplate);
             const content = data.choices[0].message.content;
             const json = JSON.parse(content);
             this.console.log(json);
@@ -120,19 +113,17 @@ class OpenAINotifier extends MixinDeviceBase<Notifier> implements Notifier {
 
 export default class OpenAIMixinProvider extends ScryptedDeviceBase implements MixinProvider {
     storageSettings = new StorageSettings(this, {
-        apiKey: {
-            title: 'API Key',
-            description: 'The API Key or token.',
-        },
-        apiUrl: {
-            title: 'API URL',
-            description: 'The API URL of the OpenAI compatible server.',
-            defaultValue: 'https://api.openai.com/v1/chat/completions',
+        chatCompletion: {
+            title: 'LLM Provider',
+            description: 'Select the LLM provider. Install the LLM plugin to add an external provider or run a local LLM server.',
+            type: 'device',
+            deviceFilter: ({ScryptedInterface, interfaces}) => {
+                return interfaces.includes(ScryptedInterface.ChatCompletion);
+            },
         },
         model: {
             title: 'Model',
-            description: 'The model to use to generate the image description. Must be vision capable.',
-            defaultValue: 'gpt-4o',
+            description: 'Optional: The model to use to generate the image description. Must be vision capable.',
         },
         systemPrompt: {
             title: 'System Prompt',
