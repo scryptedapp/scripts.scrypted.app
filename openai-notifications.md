@@ -7,11 +7,9 @@ This script can be used to intercept and modify image notifications using an Ope
 
 
 ```ts
-
-function createMessageTemplate(systemPrompt: string, model: string, imageUrl: string, metadata: any) {
+function createMessageTemplate(systemPrompt: string, imageUrl: string, metadata: any) {
     const schema = "The response must be in JSON format with a message 'title', 'subtitle', and 'body'. The title and subtitle must not be more than 24 characters each. The body must not be more than 130 characters."
     return {
-        model,
         messages: [
             {
                 role: "system",
@@ -82,7 +80,6 @@ class OpenAINotifier extends MixinDeviceBase<Notifier> implements Notifier {
 
         const messageTemplate = createMessageTemplate(
             this.openaiProvider.storageSettings.values.systemPrompt,
-            this.openaiProvider.storageSettings.values.model,
             imageUrl,
             {
                 // title,
@@ -123,10 +120,6 @@ export default class OpenAIMixinProvider extends ScryptedDeviceBase implements M
             deviceFilter: ({ScryptedInterface, interfaces}) => {
                 return interfaces.includes(ScryptedInterface.ChatCompletion);
             },
-        },
-        model: {
-            title: 'Model',
-            description: 'Optional: The model to use to generate the image description. Must be vision capable.',
         },
         systemPrompt: {
             title: 'System Prompt',
