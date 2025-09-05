@@ -2,11 +2,6 @@
 
 This script can be used to an Object Detector like Tensorflow-Lite (Coral), CoreML (Mac and Apple Silicon), and OpenVINO (Intel).
 
-
-::: warning
-The script below runs the benchmark on OpenVINO. Modify the script to run it on a different Object Detection backend(s).
-:::
-
 ## Reference Times
 
 Below are benchark times that can be expected from various servers. 
