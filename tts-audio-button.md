@@ -3,7 +3,7 @@
 This script creates a button that speaks a given line of text on cameras with two way audio or Chromecast devices. This can be used to create announcements.
 
 ::: tip
-This script requires the Google Text To Speech Plugin.
+This script requires the Kokoro TTS (Text To Speech) or Google TTS Plugin.
 :::
 
 ```ts
