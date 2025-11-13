@@ -1,6 +1,6 @@
 # Privacy Mode Toggle
 
-This script can be used to toggle Privacy Mode on a group of cameras. For example, this can be used to toggle recording interior cameras with a Home/Away automation.
+This script can be used to toggle Privacy Mode on a group of cameras. For example, this can be used to toggle streaming interior cameras with a Home/Away automation.
 
 ```ts
 class PrivacyToggler extends ScryptedDeviceBase implements Settings, OnOff {
