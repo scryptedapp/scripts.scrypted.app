@@ -1,4 +1,4 @@
-# Scrypted NVR Privacy Mode Toggle
+# Privacy Mode Toggle
 
 This script can be used to toggle Privacy Mode on a group of cameras. For example, this can be used to toggle recording interior cameras with a Home/Away automation.
 
