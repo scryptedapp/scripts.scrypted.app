@@ -44,7 +44,7 @@ export default defineConfig({
       {
         text: 'Cameras',
         items: [
-          { text: 'Privacy Mask Toggle', link: '/privacy-mask-toggle' },
+          { text: 'Privacy Mode Toggle', link: '/privacy-mode-toggle' },
           { text: 'Pan/Tilt/Zoom Move Button', link: '/ptz-button' },
           { text: 'Pan/Tilt/Zoom Preset Button', link: '/ptz-preset-button' },
           { text: 'Pan/Tilt/Zoom Speed', link: '/ptz-speed' },
@@ -63,7 +63,6 @@ export default defineConfig({
       {
         text: 'Scrypted NVR',
         items: [
-          { text: 'Privacy Mode Toggle', link: '/nvr/privacy-mode-toggle' },
           { text: 'Detection Benchmark', link: '/object-detection-benchmark' },
           { text: 'Face Recognition Unlock', link: '/face-recognition-unlock' },
         ]
